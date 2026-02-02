@@ -28,5 +28,6 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/..."
+Homepage = "https://github.com/marcodiluzio/half-life_determination"
+
 Issues = "https://github.com/..."
