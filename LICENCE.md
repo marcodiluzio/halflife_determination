@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) \[2026] \[half-life\_determination]
+Copyright (c) \[2026] \[halflife\_determination]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
