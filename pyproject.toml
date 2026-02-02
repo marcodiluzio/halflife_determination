@@ -3,7 +3,7 @@ requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "half-life_determination"
+name = "halflife_determination"
 version = "0.0.1"
 authors = [
   { name="Marco Di Luzio", email="m.diluzio@inrim.it" },
@@ -28,6 +28,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/marcodiluzio/half-life_determination"
+Homepage = "https://github.com/marcodiluzio/halflife_determination"
 #Issues = "https://github.com/..."
+
 
