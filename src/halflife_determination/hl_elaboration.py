@@ -6,15 +6,15 @@ It is suitable for long-lived radionuclides having half-lives in the order of we
 Uncertainty evaluation is performed by adopting GUM procedures.
 
 it contains functions:
-open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, _fit_plot, _fit_plot_M, _distribution_plot, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, plot_results, get_result, elaboration, load_config
+open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, get_result, elaboration, load_config
 
 This module can be imported into another script with:
-"import half-life_determination"                       #whole package
-"from half-life_determination import hl_elaboration"   #single module
+"import halflife_determination"                       #whole package
+"from halflife_determination import hl_elaboration"   #single module
 giving access to all their corrsponding methods and classes
 
 Or can be directly used in the command line with:
-"python -m half-life_determination {argument_1} {optional argument_2}"
+"python -m halflife_determination {argument_1} {optional argument_2}"
 in this case it takes 2 arguments
 {argument_1} = name or path of the folder to search
 {optional argument_2} = name of the configuration file
@@ -32,11 +32,10 @@ from itertools import product
 import configparser
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy.stats import chi2
 import consensusgen as csg
-from visualization import Plotbirks
+import visualization
 
 
 def _get_time_value(line):
@@ -451,7 +450,7 @@ def _get_birks_best_value(data, autoplot=False):
             normalization_subsample = data[_filter_without_ndfilter]
             
             if autoplot:
-                PlotBirks = Plotbirks(title=f'EDT: {item[0]}, COI: {item[1]}, CT: {item[2]}, ID: {item[3]}')
+                PlotBirks = visualization.Plotbirks(title=f'EDT: {item[0]}, COI: {item[1]}, CT: {item[2]}, ID: {item[3]}')
             
             for birks_value in birks_subsample['birks'].unique():
                 
@@ -659,154 +658,6 @@ def get_HL_data_from_dir(directory, nuclide=None, autoplot=False):
     reduced_data['norm_date'] = pd.to_datetime(reduced_data['norm_date'])
     
     return data, reduced_data, information
-    
-def _fit_plot(x, y, fit_x, fit_y, residuals, uy=None, k=2, suptitle='', fitted_HL='0'):
-    """Display fit (fit_x, fit_y) on the dataset (x, y)
-    
-    Parameters
-    ----------
-    x : numpy.array
-        normalized time series
-    y : numpy.array
-        normalized activity
-    fit_x : numpy.array
-        values of x to fit
-    fit_y : numpy.array
-        fitted values of y
-    residuals : numpy.array
-        residuals of the fit
-    uy : numpy.array
-        normalized uncertainty of y (default None)
-    k : float
-        coverage factor for expanded uncertainty (default 2)
-    suptitle : str
-        title of the plot (default '')
-    fitted_HL : str
-        the fitted half-life value (default '0')
-    
-    Return
-    ------
-    None
-    """
-    style_points = {'linestyle':'', 'marker':'o', 'markersize':2.5, 'markerfacecolor':'k', 'color':'k'}
-    style_line = {'linestyle':'-', 'marker':'', 'color':'r'}
-
-    if uy is None:
-        uy = x * 0
-
-    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(7,5), height_ratios=(2,1))
-    ax1.errorbar(x, y, yerr=k*uy, **style_points, elinewidth=0.75)
-    ax1.plot(fit_x, fit_y, **style_line)
-    ax1.set_ylabel(r'ln$\left(A_\mathrm{n}\right)$ / 1')
-    
-    ax2.errorbar(x, residuals, yerr=k*uy, **style_points, elinewidth=0.75)
-    ax2.axhline(y=0, xmin=0, xmax=1, **style_line)
-    ax2.set_xlabel(r'$t_\mathrm{n}$ / $d$')
-    ax2.set_ylabel('residuals / 1')
-    
-    ax1.text(0.75, 0.9, rf'$t_{{{"1/2"}}}$ = {fitted_HL} d', transform=ax1.transAxes)
-    
-    fig.suptitle(suptitle, fontsize=12)
-    
-    fig.tight_layout()
-    plt.show()
-    
-def _distribution_plot(Y, suptitle='', fitted_HL='0', bins=20):
-    """Display distribution of estimated result of a MonteCarlo fit
-    
-    Parameters
-    ----------
-    Y : numpy.array
-        array of results of the fit
-    suptitle : str
-        title of the plot (default '')
-    fitted_HL : str
-        the fitted half-life value (default '0')
-    bins : int
-        number of bins of the histogram visualization (default 20)
-    
-    Return
-    ------
-    None
-    """
-    style_points = {'linestyle':'', 'marker':'o', 'markersize':2.5, 'markerfacecolor':'k', 'color':'k'}
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7,5), width_ratios=(2.5,1), sharey=True)
-    
-    ax1.plot(Y, **style_points)
-    ax1.text(0.75, 0.95, rf'$t_{{{"1/2"}}}$ = {fitted_HL} d', transform=ax1.transAxes)
-    
-    ax2.hist(Y, bins=bins, orientation='horizontal', color='r')
-    ax2.set_xticks([])
-    ax2.set_xlim(0, None)
-    
-    fig.suptitle(suptitle, fontsize=12)
-    
-    fig.tight_layout()
-    plt.show()
-    
-def _fit_plot_M(x, y, fit_x, fit_y, residuals, masque, uy=None, k=2, suptitle='', fitted_HL='0'):
-    """Display fit (fit_x, fit_y) on the masqued dataset (x[masque], y[masque])
-    
-    Parameters
-    ----------
-    x : numpy.array
-        normalized time series
-    y : numpy.array
-        normalized activity
-    fit_x : numpy.array
-        values of x to fit
-    fit_y : numpy.array
-        fitted values of y
-    residuals : numpy.array
-        residuals of the fit
-    masque : list
-        list of bool of data adopted for the elaboration
-    uy : numpy.array
-        relative uncertainty of y (default None)
-    k : float
-        coverage factor for expanded uncertainty (default 2)
-    suptitle : str
-        title of the plot (default '')
-    fitted_HL : str
-        the fitted half-life value (default '0')
-    
-    Return
-    ------
-    None
-    """
-    style_points = {'linestyle':'', 'marker':'o', 'markersize':2.5, 'markerfacecolor':'k', 'color':'k', 'elinewidth':0.75}
-    style_crosses = {'linestyle':'', 'marker':'x', 'markersize':3, 'markerfacecolor':'k', 'color':'k', 'elinewidth':0.75}
-    style_line = {'linestyle':'-', 'marker':'', 'color':'r'}
-    masque = np.array(masque)
-
-    if uy is None:
-        uy = x * 0
-    
-    MX = np.array([xi for xi,mi in zip(x,masque) if mi == True])
-    MY = np.array([yi for yi,mi in zip(y,masque) if mi == True])
-    MUY = np.array([uyi for uyi,mi in zip(uy,masque) if mi == True])
-    
-    XX = np.array([xi for xi,mi in zip(x,~masque) if mi == True])
-    XY = np.array([yi for yi,mi in zip(y,~masque) if mi == True])
-    XUY = np.array([uyi for uyi,mi in zip(uy,~masque) if mi == True])
-
-    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True, figsize=(7,5), height_ratios=(2,1))
-    ax1.errorbar(MX, MY, yerr=k*MUY, **style_points)
-    ax1.errorbar(XX, XY, yerr=k*XUY, **style_crosses)
-    ax1.plot(fit_x, fit_y, **style_line)
-    ax1.set_ylabel(r'ln$\left(A_\mathrm{n}\right)$ / 1')
-    
-    ax2.errorbar(MX, residuals, yerr=k*MUY, **style_points)
-    ax2.axhline(y=0, xmin=0, xmax=1, **style_line)
-    ax2.set_xlabel(r'$t_\mathrm{n}$ / $d$')
-    ax2.set_ylabel('residuals / 1')
-    
-    ax1.text(0.75, 0.9, rf'$t_{{{"1/2"}}}$ = {fitted_HL} d', transform=ax1.transAxes)
-    
-    fig.suptitle(suptitle, fontsize=12)
-    
-    fig.tight_layout()
-    plt.show()
 
 def _exp(x, y, _lambda):
     """Exponential function accounting for radioactive decay
@@ -872,7 +723,7 @@ def _exponential_fitting_procedure(x, y, uy=None, autoplot=False, title=''):
             stitle = f'{weig}exponential fit'
         else:
             stitle = title + f'\n{weig}exponential fit'
-        _fit_plot(x, y, fit_x, fit_y, residuals, uy=uy, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
+        visualization._fit_plot(x, y, fit_x, fit_y, residuals, uy=uy, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
 
     return estimated_halflife, estimated_uncertainty, residuals
     
@@ -970,7 +821,7 @@ def _linear_fitting_procedure_M(X, Y, UY=None, autoplot=False, title='', k_limit
             stitle = 'weighted linear fit'
         else:
             stitle = title + '\nweighted linear fit'
-        _fit_plot_M(X, Y, fit_x, fit_y, residuals, masque, uy=UY, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
+        visualization._fit_plot_M(X, Y, fit_x, fit_y, residuals, masque, uy=UY, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
     
     return estimated_halflife, estimated_uncertainty, masque, residuals #return residuals too and see what happens
 
@@ -1031,7 +882,7 @@ def _linear_fitting_procedure(X, Y, UY=None, autoplot=False, title=''):
             stitle = f'{weig}linear fit'
         else:
             stitle = title + f'\n{weig}linear fit'
-        _fit_plot(X, Y, fit_x, fit_y, residuals, uy=UY, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
+        visualization._fit_plot(X, Y, fit_x, fit_y, residuals, uy=UY, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
     
     return estimated_halflife, estimated_uncertainty, residuals
     
@@ -1101,7 +952,7 @@ def _montecarlo_fitting_procedure(X, Y, UY, N=1000, masque=None, autoplot=False,
             stitle = f'montecarlo {_fit}fit'
         else:
             stitle = title + f'\nmontecarlo {_fit}fit'
-        _distribution_plot(results, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
+        visualization._distribution_plot(results, suptitle=stitle, fitted_HL=f'{estimated_halflife:.1f}')
     
     return estimated_halflife, estimated_uncertainty, residuals
 
@@ -1562,61 +1413,6 @@ def CoxProcedureB(x, u, M=100000):
 
     return y, u_y, d, U_di
     
-def plot_results(fitted_data, value_label, uncertainty_label, averages=None, k=2, bins=None, title=''):
-    """Diplay the results for any independent series of measurements
-    
-    Parameters
-    ----------
-    fitted_data : pandas.DataFrame
-        dataframe containing the fitted data
-    value_label : str
-        label of the dataframe to recall the values column
-    uncertainty_label : str
-        label of the dataframe to recall the uncertainties column
-    averages : dict
-        dict containing tuples with results of averaging procedure performed on these data (default None)
-    k : float
-        coverage factor for expanded uncertainty (default 2)
-    bins : int
-        number of bins for the histogram representation of results (default None)
-    
-    Return
-    ------
-    None
-    """
-    style_points = {'linestyle':'', 'marker':'o', 'markersize':2.5, 'markerfacecolor':'k', 'color':'k', 'elinewidth':0.75}
-    
-    sorted_data = fitted_data.sort_values(value_label, axis=0, ascending=True, inplace=False, kind='quicksort', na_position='last', ignore_index=False, key=None)
-
-    xlabels = [f'EDT: {_A}, COI: {_B}, CT: {_C}, ID: {_D}' for _A, _B, _C, _D in zip(sorted_data['ext_dead_time'], sorted_data['coincidence_w'], sorted_data['cocktail'], sorted_data['source'])]
-
-    x_plot = np.arange(len(sorted_data[value_label]))
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10,7), width_ratios=(2.5,1), sharey=True)
-    
-    ax1.errorbar(x_plot, sorted_data[value_label], yerr=k*sorted_data[uncertainty_label]**0.5, **style_points)
-    ax1.set_xticks(x_plot, xlabels, rotation=90)
-    ax1.set_ylabel(r'$t_{1/2}$ / $d$')
-    
-    colors = ['r', '#00008B', '#FFEB2A', '#AA00FF', '#66FF00', '#1E2136', '#62866C', '#81B2D9', '#BBA6DD', '#64557B', '#1E2136']
-    if averages is not None:
-        for (_key, _value) in averages.items():
-            _color = colors.pop(0)
-            ax1.axhline(y=_value[0], xmin=0, xmax=1, linestyle='-', color=_color, linewidth=1.75, label=_key)
-            ax1.axhline(y=_value[0]-k*_value[1], xmin=0, xmax=1, linestyle='--', color=_color, linewidth=1.0)
-            ax1.axhline(y=_value[0]+k*_value[1], xmin=0, xmax=1, linestyle='--', color=_color, linewidth=1.0)    
-    if bins is None:
-        bins = int(len(sorted_data[value_label]) / 5)
-    
-    ax2.hist(sorted_data[value_label], bins=bins, orientation='horizontal', color='#00008B')
-    ax2.set_xticks([])
-    ax2.set_xlim(0, None)
-    
-    fig.suptitle(title)
-    fig.legend(loc='lower right')
-
-    fig.tight_layout()
-    plt.show()
-    
 def get_result(fitted_data, method='all'):
     """Return single half-life values (with uncertainty) considering all the independent results from fitted_data
     
@@ -1731,8 +1527,8 @@ def get_result(fitted_data, method='all'):
         #and also further statistical tests?
 
         #always show the result plot
-        plot_results(fitted_data, f'{elaboration_method}_HL', f'{elaboration_method}_combined_variance', averages=results[elaboration_method_dictionary[elaboration_method]], title=elaboration_method_dictionary[elaboration_method])
-    
+        visualization.plot_results(fitted_data, f'{elaboration_method}_HL', f'{elaboration_method}_combined_variance', averages=results[elaboration_method_dictionary[elaboration_method]], title=elaboration_method_dictionary[elaboration_method])
+
     contributions = fitted_data.copy(deep=True)
     for elaboration_method in list_of_elaborated_data:
         contributions.drop(labels=f'{elaboration_method}_HL', axis=1, index=None, columns=None, level=None, inplace=True, errors='raise')
