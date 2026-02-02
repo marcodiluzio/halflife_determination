@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "half-life_determination"
+version = "0.0.1"
+authors = [
+  { name="Marco Di Luzio", email="m.diluzio@inrim.it" },
+]
+description = "Package for half-life evaluation of nuclides from repeated TDCR measurements"
+readme = "README.md"
+requires-python = ">=3.6"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE*"]
+dependencies = [
+    "numpy>=1.20",
+    "pandas>=2.3.3",
+    "scipy>=1.16.3",
+    "matplotlib>=3.10.8",
+    "consensusGen>=2.8",
+    "configparser>=7.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/..."
+Issues = "https://github.com/..."
