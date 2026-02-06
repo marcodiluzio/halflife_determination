@@ -6,7 +6,7 @@ It is suitable for long-lived radionuclides having half-lives in the order of we
 Uncertainty evaluation is performed by adopting GUM procedures.
 
 it contains functions:
-open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, get_result, elaboration, load_config
+open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, get_result, elaboration, load_config
 
 This module can be imported into another script with:
 "import halflife_determination"                       #whole package
@@ -543,6 +543,59 @@ def _get_birks_best_value(data, autoplot=False):
     birks_labels = np.abs(data_results - 1).idxmin(axis=1)
 
     return birks_labels, (data_results, data_uncertainties)
+    
+def renormalize_data(reduced_data, half_life=None, half_life_uncertainty=None):
+    """Normalize the dataset based on the updated half-life value
+    
+    Parameters
+    ----------
+    reduced_data : pandas.DataFrame
+        reduced dataframe to be updated and normalized
+    half_life : float
+        half-life value in d for decay correction; skipped if None (default None)
+    half_life_uncertainty : float
+        half-life standard uncertainty in d for decay correction uncertainty; skipped if None (default None)
+    
+    Return
+    ------
+    reduced_data_normalized : pandas.DataFrame
+        reduced dataframe normalized
+    """
+    reduced_data['meas_time'] = reduced_data['meas_time'].astype(float)
+    #normalized data
+    if half_life is not None and half_life_uncertainty is not None:
+        decay_const = np.log(2) / (half_life * 86400)
+        reduced_data['decay_corr'] = (1 - np.exp(-decay_const * reduced_data['meas_time'])) / (decay_const * reduced_data['meas_time'])
+        #linear numeric approximation (sensitivity coefficient)
+        decay_const_p = np.log(2) / ((half_life + half_life_uncertainty) * 86400)
+        decay_const_m = np.log(2) / ((half_life - half_life_uncertainty) * 86400)
+        cs_array = ((1 - np.exp(-decay_const_p * reduced_data['meas_time'])) / (decay_const_p * reduced_data['meas_time']) - (1 - np.exp(-decay_const_m * reduced_data['meas_time'])) / (decay_const_m * reduced_data['meas_time'])) / (2 * half_life_uncertainty * 86400 + 1E-24)
+        reduced_data['decay_corr_u'] = cs_array * half_life_uncertainty * 86400
+    else:
+        reduced_data['decay_corr'] = [1.0 for _ in range(len(reduced_data))]
+        reduced_data['decay_corr_u'] = [0.0 for _ in range(len(reduced_data))]
+    reduced_data['F_Act'] = reduced_data['Act'] / reduced_data['decay_corr']
+    reduced_data['F_Act_u'] = reduced_data['F_Act'] * (np.power(reduced_data['Act_u']/reduced_data['Act'], 2) + np.power(reduced_data['decay_corr_u']/reduced_data['decay_corr'], 2))**0.5
+    reduced_data['norm_Act'] = [1.0 for _ in range(len(reduced_data))]
+    reduced_data['norm_date'] = reduced_data['meas_date']
+
+    _indexes = tuple(product(reduced_data['ext_dead_time'].unique(), reduced_data['coincidence_w'].unique(), reduced_data['cocktail'].unique(), reduced_data['source'].unique()))
+    
+    for item in _indexes:
+        _filter = (reduced_data['ext_dead_time'] == item[0]) & (reduced_data['coincidence_w'] == item[1]) & (reduced_data['cocktail'] == item[2]) & (reduced_data['source'] == item[3])
+        if np.sum(_filter) == 1:
+            reduced_data.loc[_filter,'norm_Act'] = reduced_data.loc[_filter,'F_Act']
+            reduced_data.loc[_filter,'norm_date'] = reduced_data.loc[_filter,'meas_date']
+        elif np.sum(_filter) > 0:
+            earliest_datum = reduced_data[_filter]['meas_date'].idxmin(axis='index')
+            latest_datum = reduced_data[_filter]['meas_date'].idxmax(axis='index')
+            reduced_data.loc[_filter,'norm_Act'] = np.exp(np.log(reduced_data.loc[latest_datum,'F_Act']) + (np.log(reduced_data.loc[earliest_datum,'F_Act']) - np.log(reduced_data.loc[latest_datum,'F_Act']))/2)
+            reduced_data.loc[_filter,'norm_date'] = reduced_data.loc[earliest_datum,'meas_date'] + (reduced_data.loc[latest_datum,'meas_date'] - reduced_data.loc[earliest_datum,'meas_date'])/2
+            
+    reduced_data['meas_date'] = pd.to_datetime(reduced_data['meas_date'])
+    reduced_data['norm_date'] = pd.to_datetime(reduced_data['norm_date'])
+    
+    return reduced_data
 
 def get_HL_data_from_dir(directory, nuclide=None, autoplot=False):
     """Retrieve relevant half-life information from csv files in a directory
@@ -631,31 +684,12 @@ def get_HL_data_from_dir(directory, nuclide=None, autoplot=False):
             Act_unc = subsample['C_Activity_u'].values[0]
             fname = subsample['filename'].values[0]
 
-            condensed_info = {'nuclide':nuclide_name, 'meas_date':item[0], 'ext_dead_time':item[1], 'coincidence_w':item[2], 'ndfilter':'0', 'cocktail':item[3], 'volume':subsample['volume'].values[0], 'source':item[4], 'Act':Act_value, 'Act_u':Act_unc, 'birks':label_birks, 'filename':fname}
+            condensed_info = {'nuclide':nuclide_name, 'meas_date':item[0], 'meas_time':subsample['meas_time'].values[0], 'ext_dead_time':item[1], 'coincidence_w':item[2], 'ndfilter':'0', 'cocktail':item[3], 'volume':subsample['volume'].values[0], 'source':item[4], 'Act':Act_value, 'Act_u':Act_unc, 'birks':label_birks, 'filename':fname}
             
             distilled_data.append(pd.Series(condensed_info))
     
     reduced_data = pd.concat(distilled_data, axis=1).T
-    
-    #normalized data
-    reduced_data['norm_Act'] = [1.0 for _ in range(len(reduced_data))]
-    reduced_data['norm_date'] = reduced_data['meas_date']
-
-    _indexes = tuple(product(reduced_data['ext_dead_time'].unique(), reduced_data['coincidence_w'].unique(), reduced_data['cocktail'].unique(), reduced_data['source'].unique()))
-    
-    for item in _indexes:
-        _filter = (reduced_data['ext_dead_time'] == item[0]) & (reduced_data['coincidence_w'] == item[1]) & (reduced_data['cocktail'] == item[2]) & (reduced_data['source'] == item[3])
-        if np.sum(_filter) == 1:
-            reduced_data.loc[_filter,'norm_Act'] = reduced_data.loc[_filter,'Act']
-            reduced_data.loc[_filter,'norm_date'] = reduced_data.loc[_filter,'meas_date']
-        elif np.sum(_filter) > 0:
-            earliest_datum = reduced_data[_filter]['meas_date'].idxmin(axis='index')
-            latest_datum = reduced_data[_filter]['meas_date'].idxmax(axis='index')
-            reduced_data.loc[_filter,'norm_Act'] = np.exp(np.log(reduced_data.loc[latest_datum,'Act']) + (np.log(reduced_data.loc[earliest_datum,'Act']) - np.log(reduced_data.loc[latest_datum,'Act']))/2)
-            reduced_data.loc[_filter,'norm_date'] = reduced_data.loc[earliest_datum,'meas_date'] + (reduced_data.loc[latest_datum,'meas_date'] - reduced_data.loc[earliest_datum,'meas_date'])/2
-            
-    reduced_data['meas_date'] = pd.to_datetime(reduced_data['meas_date'])
-    reduced_data['norm_date'] = pd.to_datetime(reduced_data['norm_date'])
+    reduced_data = renormalize_data(reduced_data)
     
     return data, reduced_data, information
 
@@ -1413,7 +1447,7 @@ def CoxProcedureB(x, u, M=100000):
 
     return y, u_y, d, U_di
     
-def get_result(fitted_data, method='all'):
+def get_result(fitted_data, method='all', iterative=False):
     """Return single half-life values (with uncertainty) considering all the independent results from fitted_data
     
     Parameters
@@ -1432,6 +1466,8 @@ def get_result(fitted_data, method='all'):
             'cox procedure a', 'coxa'           to perform Cox procedure A
             'cox procedure b', 'coxb'           to perform Cox procedure B
             'all'                               to perform all of the above
+    iterative : bool
+        whether results are calculated iteratively (default False)
 
     Return
     ------
@@ -1526,8 +1562,9 @@ def get_result(fitted_data, method='all'):
 
         #and also further statistical tests?
 
-        #always show the result plot
-        visualization.plot_results(fitted_data, f'{elaboration_method}_HL', f'{elaboration_method}_combined_variance', averages=results[elaboration_method_dictionary[elaboration_method]], title=elaboration_method_dictionary[elaboration_method])
+        #always show the result plot if not in iterative mode
+        if not iterative:
+            visualization.plot_results(fitted_data, f'{elaboration_method}_HL', f'{elaboration_method}_combined_variance', averages=results[elaboration_method_dictionary[elaboration_method]], title=elaboration_method_dictionary[elaboration_method])
 
     contributions = fitted_data.copy(deep=True)
     for elaboration_method in list_of_elaborated_data:
@@ -1541,7 +1578,80 @@ def get_result(fitted_data, method='all'):
     
     return results, information
 
-def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000, fit='all', method='all', output_path=''):
+def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_iterations=10):
+    """Iterative procedure for half-life determination
+    useful for shorter half-lives where counting_time << half-life doesn't hold and decay correction during counting has to be considered
+    
+    Parameters
+    ----------
+    dfr : pandas.DataFrame
+        descr
+    MC_trials : int
+        number of montecarlo trials (default 10000)
+    fit : str
+        fitting procedure of choice (default 'all')
+    method : str
+        averaging method of choice (default 'all')
+    max_iterations : int
+        maximum number of iterations before returning the result even if no convergence is achieved
+    
+    Return
+    ------
+    fitted_data : pandas.DataFrame
+        elaborated dataset
+    half_life_results : pandas.DataFrame
+        half_life value
+    fitting_information : dict
+        dictionary with additional information concerning fitting procedures, including iterations
+    averaging_information : dict
+        dictionary with additional information concerning the averaging procedures
+    """
+    #preparation stuff
+    if fit not in ('weighted linear', 'wl', 'linear', 'l', 'weighted exponential', 'wexp', 'exponential', 'exp',
+    'montecarlo linear', 'mcl', 'montecarlo exponential', 'mcexp'):
+        fit = 'montecarlo linear'
+    if method not in ('arithmetic average', 'aa', 'weighted average', 'wa', 'power-moderated mean', 'pmm', 'genetic algorithm', 
+    'csg', 'ga', 'birge adjustment', 'birge', 'ba', 'dersimonianlaird', 'dsl', 'cox procedure a', 'coxa', 'cox procedure b', 'coxb'):
+        method = 'ga'
+    if MC_trials < 25000:
+        MC_trials = 25000
+    
+    n_iter = 0
+    control_check = 0.0001
+    iteration_information = {}
+    previous_HL, previous_uHL = None, None
+    while True:
+        print(f'- iteration {n_iter + 1}')
+        if previous_HL is not None and previous_uHL is not None:
+            dfr = renormalize_data(dfr, previous_HL, previous_uHL)
+        fitted_data, fitting_information = fit_data(dfr, autoplot=False, MC_trials=MC_trials, fit=fit)
+        half_life_results, averaging_information = get_result(fitted_data, method=method, iterative=True)
+
+        k0 = list(half_life_results.keys())[0]
+        k1 = list(half_life_results[k0].keys())[0]
+        _HL, _uHL = half_life_results[k0][k1][0], half_life_results[k0][k1][1]
+        #all checks
+        if previous_HL is not None:
+            check = _HL / previous_HL - 1
+        else:
+            check = '-'
+        iteration_information[('iteration', f'{n_iter + 1}')] = (_HL, _uHL, check)
+        previous_HL, previous_uHL = _HL, _uHL
+        #if check != '-' and np.abs(check) < control_check:
+        #    break
+        if check != '-' and np.abs(check) < np.sqrt(2) * _uHL/_HL * 0.01:
+            break
+        if n_iter >= max_iterations:
+            break
+        n_iter += 1
+
+    #think about it
+    #visualization.plot_results(fitted_data, f'{elaboration_method}_HL', f'{elaboration_method}_combined_variance', averages=results[elaboration_method_dictionary[elaboration_method]], title=elaboration_method_dictionary[elaboration_method])        
+    fitting_information = {**fitting_information, **iteration_information}
+        
+    return fitted_data, half_life_results, fitting_information, averaging_information
+
+def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000, fit='all', method='all', output_path='', iterative=False):
     """Comprehensive function returning a dictionary with half-life values (with uncertainties) from name of the folder where the data are found
     
     Parameters
@@ -1560,6 +1670,9 @@ def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000,
         averaging method of choice (default 'all')
     output_path : str (or Path)
         destination to save results files, if invalid defaults to {path}/elaboration (default '')
+    iterative : bool
+        whether to perform an iterative elaboration; useful for shorter half-lives to correct for counting decay (default False)
+        In case this argument is True, 'fit' and 'method' arguments need to be selected and cannot be set to all
     
     Return
     ------
@@ -1573,11 +1686,16 @@ def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000,
     df, dfr, data_information = get_HL_data_from_dir(path, nuclide=nuclide, autoplot=apt)
     print('...done!\n\nfitting on data...')
     
-    fitted_data, fitting_information = fit_data(dfr, autoplot=apt, MC_trials=MC_trials, fit=fit)
-    print('...done!\n\nperforming averages of results...')
+    iterative = True#
+    if iterative:
+        fitted_data, half_life_results, fitting_information, averaging_information = iterative_procedure(dfr, MC_trials=MC_trials, fit=fit, method=method)
+            
+    else:
+        fitted_data, fitting_information = fit_data(dfr, autoplot=apt, MC_trials=MC_trials, fit=fit)
+        print('...done!\n\nperforming averages of results...')
     
-    half_life_results, averaging_information = get_result(fitted_data, method=method)
-    print('...done!')
+        half_life_results, averaging_information = get_result(fitted_data, method=method)
+        print('...done!')
 
     if write_csv:
         if not os.path.exists(output_path):
@@ -1625,6 +1743,7 @@ def load_config(config_file):
     fit = all
     method = all
     output_path = 
+    iterative = False
     
     
     """
@@ -1668,6 +1787,10 @@ def load_config(config_file):
         pass
     try:
         settings['output_path'] = config.get('Elaboration', 'output_path')
+    except Exception:
+        pass
+    try:
+        settings['iterative'] = config.getboolean('Elaboration', 'iterative')
     except Exception:
         pass
     
