@@ -25,7 +25,7 @@ try:
 except (IndexError, TypeError, ValueError, FileNotFoundError, PermissionError):
     config_file = {}
     
-defaults = {'apt':True, 'write_csv':True, 'MC_trials':10000, 'fit':'all', 'method':'all', 'output_path':''}
+defaults = {'apt':True, 'write_csv':True, 'MC_trials':10000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}
 settings = {**defaults, **config_file}
 
 half_life_results, additional_information = hle.elaboration(path, **settings)
