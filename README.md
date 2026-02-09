@@ -16,7 +16,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
   `from halflife_determination import hl_elaboration as hle`  
   `from halflife_determination import visualization`
 
-- from the command line  
+- or directly from the command line  
   `python -m halflife_determination {argument 1} {optional argument 2}` (which is equivalent of calling hl_elaboration.elaboration(argument 1, **kwargs))
 
 \[GitHub-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
