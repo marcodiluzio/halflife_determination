@@ -22,7 +22,7 @@ in this case it takes 2 arguments
 author:  Marco Di Luzio
 email:   m.diluzio@inrim.it
 date:    2026-01-22
-version: 0.0.1
+version: 0.0.5
 """
 
 #imports
@@ -35,7 +35,7 @@ import pandas as pd
 from scipy.optimize import curve_fit
 from scipy.stats import chi2
 import consensusgen as csg
-import visualization
+from halflife_determination import visualization
 
 
 def _get_time_value(line):
@@ -1637,8 +1637,6 @@ def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_itera
             check = '-'
         iteration_information[('iteration', f'{n_iter + 1}')] = (_HL, _uHL, check)
         previous_HL, previous_uHL = _HL, _uHL
-        #if check != '-' and np.abs(check) < control_check:
-        #    break
         if check != '-' and np.abs(check) < np.sqrt(2) * _uHL/_HL * 0.01:
             break
         if n_iter >= max_iterations:
@@ -1685,8 +1683,7 @@ def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000,
     print('\ngathering information from files...')
     df, dfr, data_information = get_HL_data_from_dir(path, nuclide=nuclide, autoplot=apt)
     print('...done!\n\nfitting on data...')
-    
-    iterative = True#
+
     if iterative:
         fitted_data, half_life_results, fitting_information, averaging_information = iterative_procedure(dfr, MC_trials=MC_trials, fit=fit, method=method)
             

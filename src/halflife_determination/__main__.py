@@ -7,7 +7,6 @@ __main__.py of package half-life_determination
 import os
 import sys
 from halflife_determination import hl_elaboration as hle
-from halflife_determination import visualization
 
 print(hle.__doc__)
 
