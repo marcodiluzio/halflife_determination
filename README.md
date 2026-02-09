@@ -12,11 +12,11 @@ The package is composed of the following modules:
 A convenience function (called *elaboration*) grouping the three main functions in a single call is available. It can also be accessed from the terminal command line and manages keyword arguments passed to the intermediate functions via an optional configuration file.
 
 ## Use
-- import modules in your project
-  `from halflife_determination import hl_elaboration as hle`
+- import modules in your project  
+  `from halflife_determination import hl_elaboration as hle`  
   `from halflife_determination import visualization`
 
-- from the command line
+- from the command line  
   `python -m halflife_determination {argument 1} {optional argument 2}` (which is equivalent of calling hl_elaboration.elaboration())
 
 \[GitHub-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
