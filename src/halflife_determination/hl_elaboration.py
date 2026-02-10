@@ -777,14 +777,14 @@ def _linear_fitting_procedure_M(X, Y, UY=None, autoplot=False, title='', k_limit
     title : str
         title of the plot (default '')
     k_limit : float
-        number of standard deviations to check for statistical consistency
+        number of standard deviations to check for statistical consistency (default 2.5)
 
     Return
     ------
     estimated_halflife : float
         half-life value (in days) resulting from performed fit
     estimated_uncertainty : float
-        standard uncertaity associated with fitted half-life
+        standard uncertainty associated with fitted half-life
     masque : list
         list of bool indicationg True at the index of elaborated data and False at the index of rejected ones
     """
@@ -940,7 +940,7 @@ def _montecarlo_fitting_procedure(X, Y, UY, N=1000, masque=None, autoplot=False,
     title : str
         title of the plot (default '')
     linear : bool
-        whether perform a linear or an exponential fit
+        whether perform a linear or an exponential fit (default True)
 
     Return
     ------
@@ -998,7 +998,7 @@ def _get_autocorrelation(residuals, alpha=0.05):
     residuals : numpy.array
         evalauted residuals of fit
     alpha : float
-        descr (default 0.05)
+        significance level (default 0.05)
     
     Return
     ------
@@ -1024,7 +1024,7 @@ def fit_data(dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='al
     Parameters
     ----------
     dataset : pandas.DataFrame
-        dataframe containing data to fitS
+        dataframe containing data to fit
     data_threshold : int
         minimum number of data to perform the fit (default 3)
     MC_trials : int
@@ -1087,6 +1087,7 @@ def fit_data(dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='al
                 local_apt = autoplot
             linmodel_halflife, linmodel_uncertainty, masque, linmodel_residuals = _linear_fitting_procedure_M(local_time, np.log(y), ruy, autoplot=local_apt, title=setup)
 
+            #additional contribution to uncertainties other than that of the fit are grouped in high frequency '_uHF', medium frequency '_uMF' and low frequency '_uLF'
             #evaluation of high frequency uncertainty (Pomme), constant part (assuming fixed relative uncertainty)
             if masque is not None:
                 total_time = local_time[masque]
@@ -1360,7 +1361,7 @@ def CoxProcedureA(x, v, alpha=0.05, noFilter=False, k=2.5):
     alpha : float
         risk of first species (defaul = 0.05)
     noFilter: bool
-        inactivate or activate the filtering of outliers (default = False)
+        inactivate or activate the filtering of outliers (default False)
     k : float
         coverage factor for expanded uncertainty on degrees of equivalance (DoE) (default 2.5)
 
