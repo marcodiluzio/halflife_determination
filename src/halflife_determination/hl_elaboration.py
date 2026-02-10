@@ -6,10 +6,9 @@ It is suitable for long-lived radionuclides having half-lives in the order of we
 Uncertainty evaluation is performed by adopting GUM procedures.
 
 it contains functions:
-open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, get_result, elaboration, load_config
+open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, iterative_procedure, get_result, elaboration, load_config
 
 This module can be imported into another script with:
-"import halflife_determination"                       #whole package
 "from halflife_determination import hl_elaboration"   #single module
 giving access to all their corrsponding methods and classes
 
@@ -21,8 +20,6 @@ in this case it takes 2 arguments
 
 author:  Marco Di Luzio
 email:   m.diluzio@inrim.it
-date:    2026-01-22
-version: 0.0.5
 """
 
 #imports
@@ -35,7 +32,10 @@ import pandas as pd
 from scipy.optimize import curve_fit
 from scipy.stats import chi2
 import consensusgen as csg
-from halflife_determination import visualization
+try:
+    from halflife_determination import visualization
+except ImportError:
+    import visualization
 
 
 def _get_time_value(line):
@@ -1578,7 +1578,7 @@ def get_result(fitted_data, method='all', iterative=False):
     
     return results, information
 
-def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_iterations=10):
+def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_iterations=10, control_check=0.01):
     """Iterative procedure for half-life determination
     useful for shorter half-lives where counting_time << half-life doesn't hold and decay correction during counting has to be considered
     
@@ -1593,7 +1593,9 @@ def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_itera
     method : str
         averaging method of choice (default 'all')
     max_iterations : int
-        maximum number of iterations before returning the result even if no convergence is achieved
+        maximum number of iterations before returning the result even if no convergence is achieved (default 10)
+    control_check : float
+        ratio of measurement uncertainty used as check to stop the iteration (default 0.01)
     
     Return
     ------
@@ -1617,7 +1619,6 @@ def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_itera
         MC_trials = 25000
     
     n_iter = 0
-    control_check = 0.0001
     iteration_information = {}
     previous_HL, previous_uHL = None, None
     while True:
@@ -1637,14 +1638,15 @@ def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_itera
             check = '-'
         iteration_information[('iteration', f'{n_iter + 1}')] = (_HL, _uHL, check)
         previous_HL, previous_uHL = _HL, _uHL
-        if check != '-' and np.abs(check) < np.sqrt(2) * _uHL/_HL * 0.01:
+        if check != '-' and np.abs(check) < np.sqrt(2) * _uHL/_HL * control_check:
             break
         if n_iter >= max_iterations:
             break
         n_iter += 1
-
-    #think about it
-    #visualization.plot_results(fitted_data, f'{elaboration_method}_HL', f'{elaboration_method}_combined_variance', averages=results[elaboration_method_dictionary[elaboration_method]], title=elaboration_method_dictionary[elaboration_method])        
+    
+    ids = {'weighted linear':'wl', 'linear':'l', 'weighted exponential':'wexp', 'exponential':'exp', 'montecarlo linear':'mcl', 'montecarlo exponential':'mcexp'}
+    reverse_ids = {'l':'linear fit', 'wl':'weigthed linear fit', 'wexp':'weighted exponential fit', 'exp':'exponential fit', 'mcl':'montecarlo linear fit', 'mcexp':'montecarlo exponential fit'}
+    visualization.plot_results(fitted_data, f'{ids.get(fit, fit)}_HL', f'{ids.get(fit, fit)}_combined_variance', averages=half_life_results[reverse_ids[ids.get(fit, fit)]], title=reverse_ids[ids.get(fit, fit)])
     fitting_information = {**fitting_information, **iteration_information}
         
     return fitted_data, half_life_results, fitting_information, averaging_information

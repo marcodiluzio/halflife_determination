@@ -6,7 +6,10 @@ __main__.py of package half-life_determination
 
 import os
 import sys
-from halflife_determination import hl_elaboration as hle
+try:
+    from halflife_determination import hl_elaboration as hle
+except ImportError:
+    import hl_elaboration as hle
 
 print(hle.__doc__)
 
