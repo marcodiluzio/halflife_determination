@@ -16,14 +16,15 @@ A convenience function (called *elaboration*) grouping the three main functions 
 - install the package from pip  
   `pip install halflife_determination`  
 
-### Install
-- hello  
-
-- import modules in your project  
-  `from halflife_determination import hl_elaboration as hle`  
-  `from halflife_determination import visualization`
+### Run from terminal (option 1)
+- create a configuration file  
 
 - or directly from the command line  
   `python -m halflife_determination {argument 1} {optional argument 2}` (which is equivalent of calling `hl_elaboration.elaboration(argument 1, **kwargs)`)
+
+### Run from script (option 2)
+- import modules in python script  
+  `from halflife_determination import hl_elaboration as hle`  
+  `from halflife_determination import visualization`  
 
 \[GitHub-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
