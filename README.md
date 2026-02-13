@@ -12,11 +12,15 @@ The package is composed of the following modules:
 A convenience function (called *elaboration*) grouping the three main functions in a single call is available. It can also be accessed from the terminal command line and manages keyword arguments passed to the intermediate functions via an optional configuration file.
 
 ## Quick start
-- install the package from pip
-  $ `pip install halflife_determination`  
+### Install
+- install the package from pip  
+  `pip install halflife_determination`  
+
+### Install
+- hello  
 
 - import modules in your project  
-  $ `from halflife_determination import hl_elaboration as hle`  
+  `from halflife_determination import hl_elaboration as hle`  
   `from halflife_determination import visualization`
 
 - or directly from the command line  
