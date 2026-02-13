@@ -167,7 +167,7 @@ def open_result_file(filename):
 
     try:
         df = pd.read_csv(filename, sep=';', header=0, index_col=(0,1), dtype=object)
-    except (PermissionError, IndexError, pd.errors.EmptyDataError):
+    except (PermissionError, IndexError, UnicodeDecodeError, pd.errors.EmptyDataError):
         return None
     
     try:
