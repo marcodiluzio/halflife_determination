@@ -22,7 +22,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
   `from halflife_determination import visualization   #optional, only for custom visualization`  
 
   `kwargs = {'':True, '':False}`  
-  `hle.elaboration('path_to_data_folder', **kwargs)`  
+  `results, information = hle.elaboration('path_to_data_folder', **kwargs)`  
 
 ### Run from terminal (option 2)
 - create a configuration file  
