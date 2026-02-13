@@ -6,7 +6,7 @@ It is suitable for long-lived radionuclides having half-lives in the order of we
 Uncertainty evaluation is performed by adopting GUM procedures.
 
 it contains functions:
-open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, iterative_procedure, get_result, elaboration, load_config
+open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, iterative_procedure, get_result, elaboration, read_info, load_config
 
 This module can be imported into another script with:
 "from halflife_determination import hl_elaboration"   #single module
@@ -27,6 +27,7 @@ import os
 import datetime
 from itertools import product
 import configparser
+import pickle
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
@@ -166,7 +167,7 @@ def open_result_file(filename):
 
     try:
         df = pd.read_csv(filename, sep=';', header=0, index_col=(0,1), dtype=object)
-    except (PermissionError, IndexError):
+    except (PermissionError, IndexError, pd.errors.EmptyDataError):
         return None
     
     try:
@@ -1586,7 +1587,7 @@ def iterative_procedure(dfr, MC_trials=10000, fit='all', method='all', max_itera
     Parameters
     ----------
     dfr : pandas.DataFrame
-        descr
+        dataframe containing data to fit
     MC_trials : int
         number of montecarlo trials (default 10000)
     fit : str
@@ -1696,6 +1697,8 @@ def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000,
     
         half_life_results, averaging_information = get_result(fitted_data, method=method)
         print('...done!')
+        
+    information = {**data_information, **fitting_information, **averaging_information}
 
     if write_csv:
         if not os.path.exists(output_path):
@@ -1713,11 +1716,29 @@ def elaboration(path, apt=False, nuclide=None, write_csv=False, MC_trials=10000,
             r_df[f'{column_name}_value / d'], r_df[f'{column_name}_uncertainty / d'] = zip(*r_df[column_name])
             r_df.drop(labels=column_name, axis=1, index=None, columns=None, level=None, inplace=True, errors='raise')
         r_df.to_csv(os.path.join(output_path, f'results_{date}.csv'))
+        
+        with open(os.path.join(output_path, f'additional_information_{date}.dict'), 'wb') as info_file:
+            pickle.dump(information, info_file)
 
-    print(fitted_data)
     print('COMPLETED!')
     
-    return half_life_results, {**data_information, **fitting_information, **averaging_information}
+    return half_life_results, information
+    
+def read_info(info_file):
+    """Load and return the information dictionary from pickled file
+    
+    Parameters
+    ----------
+    info_file : str (Path)
+        name or path pointing to the .dict file
+    
+    Return
+    ------
+    information : dict
+        dictionary with detailed information about the whole procedure
+    """
+    with open(info_file, 'rb') as read_info_file:
+        return pickle.load(read_info_file)
 
 def load_config(config_file):
     """Load and return the configuration
