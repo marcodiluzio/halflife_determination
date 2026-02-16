@@ -6,7 +6,7 @@ It is suitable for long-lived radionuclides having half-lives in the order of we
 Uncertainty evaluation is performed by adopting GUM procedures.
 
 it contains functions:
-open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, iterative_procedure, get_result, elaboration, read_info, load_config
+open_result_file, _get_time_value, _get_activity, _get_category_value, _linear_fitting_procedure_birks, _get_filenames, _get_birks_best_value, get_HL_data_from_dir, renormalize_data, _exp, _exponential_fitting_procedure, _montecarlo_fitting_procedure, _linear_fitting_procedure, _linear_fitting_procedure_M, fit_data, _get_autocorrelation, PMM_method, BirgeAdjust, DerSimonianLairdp, CoxProcedureA, CoxProcedureB, iterative_procedure, get_result, elaboration, read_info, create_default_config, load_config
 
 This module can be imported into another script with:
 "from halflife_determination import hl_elaboration"   #single module
@@ -413,8 +413,8 @@ def _get_filenames(folder):
         else:
             second_level_names.append(name)
             
-    #cleanup (filter folders and return only files)
-    second_level_names = [filename for filename in second_level_names if os.path.isfile(filename)]
+    #cleanup (filter folders and return only csv files)
+    second_level_names = [filename for filename in second_level_names if os.path.isfile(filename) and filename.endswith('.csv')]
 
     return second_level_names
     
@@ -1739,6 +1739,29 @@ def read_info(info_file):
     """
     with open(info_file, 'rb') as read_info_file:
         return pickle.load(read_info_file)
+        
+def create_default_config(config_file):
+    """Create new configuration file
+    
+    Parameters
+    ----------
+    config_file : str (Path)
+        file name or path where configuration file has to be created
+    
+    Return
+    ------
+    None
+    """
+    with open(config_file, 'w') as new_config_file:
+        new_config_file.write("""[Elaboration]
+autoplot = False
+nuclide = None
+write_csv = True
+MC_trials = 20000
+fit = all
+method = all
+output_path = 
+iterative = True""")
 
 def load_config(config_file):
     """Load and return the configuration
@@ -1757,19 +1780,19 @@ def load_config(config_file):
     Configuration file should be structured liked reported below, all settings have to be listed after the [Elaboration] section:
 
     [Elaboration]
-    autoplot = True
-    nuclide = None
-    write_csv = True
-    MC_trials = 20000
-    fit = all
-    method = all
-    output_path = 
-    iterative = False
+    autoplot = True      #True or False, whether automatically show plot of intermediate processes
+    nuclide = None       #None or string as: {symbol}-{mass number}, in case multiple nuclides are present in the data files
+    write_csv = True     #True or False, whether save on disc the intermediate and final result of the elaboration
+    MC_trials = 20000    #integer from 100 to 10000000, number of MonteCarlo trials
+    fit = all            #string among weighted linear, wl, linear, l, weighted exponential, wexp, exponential, exp, montecarlo linear, mcl, montecarlo exponential, mcexp, montecarlo, mcm, weighted, w, nonweighted, nw, all; which fit to perform
+    method = all         #string among: arithmetic average, aa, weighted average, wa, power-moderated mean, pmm, genetic algorithm, csg, ga, birge adjustment, birge, ba, dersimonianlaird, dsl, cox procedure a, coxa, cox procedure b, coxb, all; which average model to ues
+    output_path =        #string defining the path to save the output (if write_csv = True)
+    iterative = False    #True or False, whether to apply the iterative procedure
     
     
     """
     if not os.path.exists(config_file):
-        #create_default_config()
+        create_default_config(config_file)
         print('no configuration file found, fallback to default configuration')
         return {}
         

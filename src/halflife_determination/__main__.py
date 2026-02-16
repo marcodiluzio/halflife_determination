@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-__main__.py of package half-life_determination
+__main__.py of package halflife_determination
 """
 
 import os
@@ -21,7 +21,9 @@ for i, arg in enumerate(sys.argv):
 try:
     path = sys.argv[1]
 except IndexError:
-    path = os.path.abspath('.')
+    raise IndexError('argument defining the path of the folder containing the files is required')
+if not os.path.isdir(path):
+    raise FileNotFoundError('Folder not found!\ncheck the correct path or make sure path is a folder')
 
 try:
     config_file = hle.load_config(sys.argv[2])
