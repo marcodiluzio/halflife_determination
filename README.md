@@ -23,20 +23,14 @@ A convenience function (called *elaboration*) grouping the three main functions 
 
 - call elaboration function  
   `kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}`  
-  `results, information = hle.elaboration('path_to_data_folder', **kwargs)`  
+  `results, information = hle.elaboration('path_to_data_folder', **kwargs)`
+
+- for a finer control, call main function directly
+  A  
+  B  
+  C  
 
 ### Run from terminal (option 2)
-- create a configuration file  
-  [Elaboration]  
-  autoplot = True  
-  nuclide = None  
-  write_csv = True  
-  MC_trials = 20000  
-  fit = all  
-  method = all  
-  output_path =   
-  iterative = False  
-
 - run directly from the command line (terminal or PowerShell)  
   `python -m halflife_determination 'path_to_data_folder' 'path_to_configuration_file'{optional}` (which is equivalent of calling `hl_elaboration.elaboration('path_to_data_folder', **kwargs)`)
 
