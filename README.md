@@ -20,9 +20,11 @@ A convenience function (called *elaboration*) grouping the three main functions 
   ``` 
 
 ### Run from script (option 1)
-- import modules in python script  
-  `from halflife_determination import hl_elaboration as hle   #main script with all relevant functions`  
-  `from halflife_determination import visualization           #optional, only for custom visualization`  
+- import modules in python script
+  ```shell
+  from halflife_determination import hl_elaboration as hle   #main script with all relevant functions  
+  from halflife_determination import visualization           #optional, only for custom visualization
+  ```
 
 - call elaboration function  
   `kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}`  
