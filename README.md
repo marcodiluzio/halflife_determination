@@ -32,4 +32,8 @@ A convenience function (called *elaboration*) grouping the three main functions 
   `python -m halflife_determination {argument 1} {optional argument 2}` (which is equivalent of calling `hl_elaboration.elaboration(argument 1, **kwargs)`)
 
 
+## Contacts
+Marco Di Luzio  
+m.diluzio@inrim.it
+
 \[GitHub-flavored Markdown](https://guides.github.com/features/mastering-markdown/)
