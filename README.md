@@ -21,7 +21,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
   `from halflife_determination import hl_elaboration as hle   #main script with all relevant functions`  
   `from halflife_determination import visualization           #optional, only for custom visualization`  
 
-- call elaboration function0  
+- call elaboration function  
   `kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}`  
   `results, information = hle.elaboration('path_to_data_folder', **kwargs)`  
 
