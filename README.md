@@ -32,14 +32,22 @@ A convenience function (called *elaboration*) grouping the three main functions 
   results, information = hle.elaboration('path_to_data_folder', **kwargs)
   ```
 
-- or, for a finer control, call main functions directly  
-  `original_dataset, elaborated_dataset, information = hle.get_HL_data_from_dir('path_to_data_folder', nuclide=None, autoplot=False)`  
-  `fitted_data, information = hle.fit_data(elaborated_dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='all')`  
-  `results, information = hle.get_result(fitted_data, method='all', iterative=False)`  
+- or, for a finer control, call main functions directly
+  ```python
+  original_dataset, elaborated_dataset, information = hle.get_HL_data_from_dir('path_to_data_folder', nuclide=None, autoplot=False)  
+  fitted_data, information = hle.fit_data(elaborated_dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='all')  
+  results, information = hle.get_result(fitted_data, method='all', iterative=False)
+  ```
 
 ### Run from terminal (option 2)
-- run directly from the command line (terminal or PowerShell)  
-  `python -m halflife_determination 'path_to_data_folder' 'path_to_configuration_file'{optional}` (which is equivalent of calling `hl_elaboration.elaboration('path_to_data_folder', **kwargs)`)
+- run directly from the command line (terminal or PowerShell)
+  ```shell
+  python -m halflife_determination 'path_to_data_folder' 'path_to_configuration_file'{optional}  
+  ```
+  (which is equivalent of calling
+  ```python
+  hl_elaboration.elaboration('path_to_data_folder', **kwargs)
+  ```
 
 
 ## Contacts
