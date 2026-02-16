@@ -21,7 +21,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
 
 ### Run from script (option 1)
 - import modules in python script
-  ```shell
+  ```python
   from halflife_determination import hl_elaboration as hle   #main script with all relevant functions  
   from halflife_determination import visualization           #optional, only for custom visualization
   ```
