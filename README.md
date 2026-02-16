@@ -1,8 +1,8 @@
 # halflife_determination
 
 ## General
-halflife_determination is a package for evaluation of half-life value (and uncertainty) of radionuclides which activity is monitored collecting information on beta decay through a series of TDCR (Triple-to-Double Coincidence Ratio) liquid scintillation measurements. It is written in python version 3.13 and relies on scientific modules such as *numpy*, *pandas*, *scipy*, *consensusGen*.  
-At present, the input file format is csv resulting from TDCR elaboration performed with package [TDCRPy](https://github.com/RomainCoulon/TDCRPy)
+halflife_determination is a package for evaluation of half-life value (and uncertainty) of radionuclides which activity is monitored collecting information on beta decay through a series of TDCR (Triple-to-Double Coincidence Ratio) liquid scintillation measurements. It is written in python 3 and relies on scientific modules such as *numpy*, *pandas*, *scipy*, *consensusGen*.  
+At present, the input file format is the csv resulting from TDCR elaboration performed with package [TDCRPy](https://github.com/RomainCoulon/TDCRPy). Additional formats and data from other measurement techiques will be investigated in the future.
 
 ## Structure
 The package is composed of the following modules:
@@ -44,7 +44,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
   ```shell
   python -m halflife_determination 'path_to_data_folder' 'path_to_configuration_file'{optional}  
   ```
-  (which is equivalent of calling
+  (which is equivalent of calling elaboration)
   ```python
   hl_elaboration.elaboration('path_to_data_folder', **kwargs)
   ```
