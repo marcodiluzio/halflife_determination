@@ -29,7 +29,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
 - create a configuration file  
 
 - run directly from the command line (terminal or PowerShell)  
-  `python -m halflife_determination {argument 1} {optional argument 2}` (which is equivalent of calling `hl_elaboration.elaboration(argument 1, **kwargs)`)
+  `python -m halflife_determination 'path_to_data_folder' 'path_to_configuration_file'{optional}` (which is equivalent of calling `hl_elaboration.elaboration('path_to_data_folder', **kwargs)`)
 
 
 ## Contacts
