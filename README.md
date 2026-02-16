@@ -25,10 +25,10 @@ A convenience function (called *elaboration*) grouping the three main functions 
   `kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}`  
   `results, information = hle.elaboration('path_to_data_folder', **kwargs)`
 
-- for a finer control, call main function directly
-  A  
-  B  
-  C  
+- for a finer control, call main functions directly  
+  `original_dataset, elaborated_dataset, information = hle.get_HL_data_from_dir('path_to_data_folder', nuclide=None, autoplot=False)`  
+  `fitted_data, information = hle.fit_data(elaborated_dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='all')`  
+  `results, information = hle.get_result(fitted_data, method='all', iterative=False)`  
 
 ### Run from terminal (option 2)
 - run directly from the command line (terminal or PowerShell)  
