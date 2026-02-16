@@ -1050,6 +1050,8 @@ def fit_data(dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='al
     ------
     result : pandas.DataFrame
         result of the performed fit
+    information : dict
+        dictionary with additional information concerning fitting procedures
     """
     
     #fallback to 'all' if invalid string
