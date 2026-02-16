@@ -26,9 +26,11 @@ A convenience function (called *elaboration*) grouping the three main functions 
   from halflife_determination import visualization           #optional, only for custom visualization
   ```
 
-- call elaboration function  
-  `kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}`  
-  `results, information = hle.elaboration('path_to_data_folder', **kwargs)`
+- call elaboration function
+  ```python
+  kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}  
+  results, information = hle.elaboration('path_to_data_folder', **kwargs)
+  ```
 
 - or, for a finer control, call main functions directly  
   `original_dataset, elaborated_dataset, information = hle.get_HL_data_from_dir('path_to_data_folder', nuclide=None, autoplot=False)`  
