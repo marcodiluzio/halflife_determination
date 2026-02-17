@@ -48,6 +48,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
   ```python
   hl_elaboration.elaboration('path_to_data_folder', **kwargs)
   ```
+  if the 'path_to_configuration_file' points to a file that does not exist, a default configuration file will be created at that destination  
 
 
 ## Contacts
