@@ -2,7 +2,8 @@
 
 ## General
 halflife_determination is a package for evaluation of half-life value (and corresponding uncertainty) of radionuclides which activity is monitored by collecting information on beta decay through a series of TDCR (Triple-to-Double Coincidence Ratio) liquid scintillation measurements. It is written in python 3 and relies on scientific modules such as *numpy*, *pandas*, *scipy*, *consensusGen*.  
-At present, the only input file format allowed is the csv resulting from TDCR elaboration performed with package [TDCRPy](https://github.com/RomainCoulon/TDCRPy). Additional formats and data from other measurement techniques will be investigated in the future.
+At present, the only input file format allowed is the csv resulting from TDCR elaboration performed with package [TDCRPy](https://github.com/RomainCoulon/TDCRPy). All input files to be considered for elaboration need to be inside a main folder; they can, however, be organized into subfolders.  
+Additional formats and data from other measurement techniques will be investigated in the future.
 
 ## Structure
 The package is composed of the following modules:
