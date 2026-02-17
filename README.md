@@ -28,7 +28,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
 
 - call elaboration function
   ```python
-  kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials'=20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}  
+  kwargs = {'apt':False, 'nuclide':None, 'write_csv':True, 'MC_trials':20000, 'fit':'all', 'method':'all', 'output_path':'', 'iterative':False}  
   results, information = hle.elaboration('path_to_data_folder', **kwargs)
   ```
 
