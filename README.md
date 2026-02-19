@@ -14,8 +14,8 @@ The package is composed of the following modules:
 A convenience function (called *elaboration*) grouping the three main functions in a single call is available. It can also be accessed from the terminal command line and manages keyword arguments passed to the intermediate functions via an optional configuration file.  
 
 ## Measurement data management
-Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. Additional measurements acquired with different ND filters are also needed at the beginning (or at regular intervals) of the measurement campaign.  
-No special format for the file names is required. All files have to be of .csv format and saved into a main folder (which will be recalled by the software)  
+Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required; they consist in a series of measurements acquired with different ND filters are also needed at the beginning (or at regular intervals) of the measurement campaign.  
+All files have to be of .csv format returned from '' and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code.  
 
 ## Quick start
 ### Install
