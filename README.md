@@ -14,8 +14,53 @@ The package is composed of the following modules:
 A convenience function (called *elaboration*) grouping the three main functions in a single call is available. It can also be accessed from the terminal command line and manages keyword arguments passed to the intermediate functions via an optional configuration file.  
 
 ## Measurement data management
-Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required; they consist in a series of measurements acquired with different ND filters are also needed at the beginning (or at regular intervals) of the measurement campaign.  
+Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required. A so-called Birks evaluation consists in a tight series of measurements acquired for each dataset where the sample is measured with and wihtout various ND filters to artificially variate the TDCR value and record the changes to the evaluated activity. at the beginning (or at regular intervals) of the measurement campaign is also supported.  
 All files have to be of .csv format returned from '' and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code.  
+
+Pm-147
+|   
++---2025-06
+|       TDCR_Results_Pm-147_LNHB_2025_UG4_0_nanoTDCR_50_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_PS1_0.1_nanoTDCR_10_50_5.csv
+|       TDCR_Results_Pm-147_LNHB_2025_PS1_0.1_nanoTDCR_10_50_6.csv
+|       ...
+|       TDCR_Results_Pm-147_LNHB_2025_UG4_0_nanoTDCR_50_100_11.csv
+|       
++---2025-08
+|       TDCR_Results_Pm-147_LNHB_2025_August_PS1_0_nanoTDCR_10_100_10.csv
+|       TDCR_Results_Pm-147_LNHB_2025_August_PS1_0_nanoTDCR_10_100_11.csv
+|       TDCR_Results_Pm-147_LNHB_2025_August_PS1_0_nanoTDCR_10_100_12.csv
+|       ...
+|       TDCR_Results_Pm-147_LNHB_2025_August_UG4_0_nanoTDCR_50_50_9.csv
+|       
++---2025-09
+|       TDCR_Results_Pm-147_LNHB_2025_September_PS4_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_September_PS3_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_September_PS2_0_nanoTDCR_10_100_12.csv
+|       ...
+|       TDCR_Results_Pm-147_LNHB_2025_September_UG1_0_nanoTDCR_10_50_4.csv
+|       
++---2025-10
+|       TDCR_Results_Pm-147_LNHB_2025_October_PS4_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_October_PS3_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_October_PS2_0_nanoTDCR_10_100_12.csv
+|       ...
+|       TDCR_Results_Pm-147_LNHB_2025_October_UG1_0_nanoTDCR_10_50_4.csv
+|       
++---2025-11
+|       TDCR_Results_Pm-147_LNHB_2025_November_PS4_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_November_PS3_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_November_PS2_0_nanoTDCR_10_100_12.csv
+|       ...
+|       TDCR_Results_Pm-147_LNHB_2025_November_UG1_0_nanoTDCR_10_50_4.csv
+|       
++---2025-12
+|       TDCR_Results_Pm-147_LNHB_2025_December_PS4_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_December_PS3_0_nanoTDCR_10_100_12.csv
+|       TDCR_Results_Pm-147_LNHB_2025_December_PS2_0_nanoTDCR_10_100_12.csv
+|       ...
+|       TDCR_Results_Pm-147_LNHB_2025_December_UG1_0_nanoTDCR_10_50_4.csv
+|       
 
 ## Quick start
 ### Install
