@@ -57,7 +57,7 @@ Pm-147/
 │   └── TDCR_Results_Pm-147_LNHB_2025_December_UG4_0_nanoTDCR_50_50_9.csv
 ```
 
-And a typical format of the csv inpt file.  
+And the typical format of a csv input file.  
 
 ```
 Section;Parameter;Value;Uncertainty;Unit;Description
