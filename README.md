@@ -13,9 +13,9 @@ The package is composed of the following modules:
 *hl_elaboration* contains functions following a modular structure as it is composed of three main functions (*get_HL_data_from_dir*, *fit_data*, *get_result*), each one returning the input that feeds the following function until the final output is obtained. Initial input is a folder name containing the measurement results. After each function call, a wealth of output is returned, including *pandas.DataFrames* containing partial results along with dictionaries providing useful supplementary information. Finally, a single value of half-life is reported together with the corresponding estimated uncertainty, evaluated through sum of variances from independent contributions or MonteCarlo simulation.  
 A convenience function (called *elaboration*) grouping the three main functions in a single call is available. It can also be accessed from the terminal command line and manages keyword arguments passed to the intermediate functions via an optional configuration file.  
 
-## Measurement data management
-Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required. A so-called Birks evaluation consists in a tight series of measurements acquired for each dataset where the sample is measured with and wihtout various ND filters to artificially variate the TDCR value and record the changes to the evaluated activity. at the beginning (or at regular intervals) of the measurement campaign is also supported.  
-All files have to be of .csv format returned from '' and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code. Showed below it's an example of a valid way to manage your measurement files.  
+## Input data management
+Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required. A so-called Birks evaluation consists in a tight series of measurements acquired for each dataset where the sample is measured with and wihtout various ND filters to artificially variate the TDCR value and record the changes to the evaluated activity. At least one Birks evaluation is required for each dataset, however multiple evaluations held at regular intervals during the measurement campaign are also supported.  
+All files (measurement for halflife determination and Birks evalaution) have to be of .csv format returned from '' module and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code. Showed below it's an example of a valid way to manage your measurement files.  
 
 ```
 Pm-147/
@@ -55,6 +55,22 @@ Pm-147/
 │   ├── TDCR_Results_Pm-147_LNHB_2025_December_PS1_0_nanoTDCR_10_100_12.csv
 │   ├── ...
 │   └── TDCR_Results_Pm-147_LNHB_2025_December_UG4_0_nanoTDCR_50_50_9.csv
+```
+
+And a typical format of the csv inpt file.  
+
+```
+Section;Parameter;Value;Uncertainty;Unit;Description
+General;Nuclide;Pm-147;;-;Radionuclide name
+General;Reference Date;2024-12-16 12:00:00;;-;Reference date
+General;Measurement Date;2025-11-18 15:05:00;;-;Date of measurement
+General;Half-life (T1/2);82786000.0;13000.0;days;Half-life
+Source;Laboratory;LNHB;;-;Provider of the standard solution
+Source;LS Cocktail;ProSafe+;;-;Liquid scintillation cocktail
+Source;Aqueous Fraction;0.0625;;rel;Aqueous fraction in scintillator
+Source;Grey Filter ND;0;;-;Neutral density grey filter
+...
+Model Analytic;Combined Rel. Unc. Activity;0.0012135880474480828;;rel;Combined relative uncertainty for activity
 ```
 
 ## Quick start
