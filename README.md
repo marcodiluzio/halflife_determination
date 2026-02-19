@@ -17,6 +17,7 @@ A convenience function (called *elaboration*) grouping the three main functions 
 Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required. A so-called Birks evaluation consists in a tight series of measurements acquired for each dataset where the sample is measured with and wihtout various ND filters to artificially variate the TDCR value and record the changes to the evaluated activity. at the beginning (or at regular intervals) of the measurement campaign is also supported.  
 All files have to be of .csv format returned from '' and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code.  
 
+```
 Pm-147
 |   
 +---2025-06
@@ -61,6 +62,7 @@ Pm-147
 |       ...
 |       TDCR_Results_Pm-147_LNHB_2025_December_UG1_0_nanoTDCR_10_50_4.csv
 |       
+```
 
 ## Quick start
 ### Install
