@@ -154,8 +154,9 @@ Model Analytic;Combined Rel. Unc. Activity;0.0012135880474480828;;rel;Combined r
 ## Documentation
 for further documentation refer to the classes' and functions' docstrings  
 ```python
+from halflife_determination import hl_elaboration
 help(hl_elaboration.elaboration)
-Help on function elaboration in module halflife_determination.hl_elaboration:
+"""Help on function elaboration in module halflife_determination.hl_elaboration:
 
 elaboration(
     path,
@@ -195,7 +196,7 @@ elaboration(
     half_life_results : dict
         half_life value
     information : dict
-        dictionary with useful information
+        dictionary with useful information"""
 ```
 
 ## Contacts
