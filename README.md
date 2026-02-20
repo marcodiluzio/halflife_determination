@@ -155,48 +155,42 @@ Model Analytic;Combined Rel. Unc. Activity;0.0012135880474480828;;rel;Combined r
 for further documentation refer to the classes' and functions' docstrings  
 ```python
 from halflife_determination import hl_elaboration
-help(hl_elaboration.elaboration)
-"""Help on function elaboration in module halflife_determination.hl_elaboration:
+help(hl_elaboration.fit_data)
+"""Help on function fit_data in module halflife_determination.hl_elaboration:
 
-elaboration(
-    path,
-    apt=False,
-    nuclide=None,
-    write_csv=False,
-    MC_trials=10000,
-    fit='all',
-    method='all',
-    output_path='',
-    iterative=False
-)
-    Comprehensive function returning a dictionary with half-life values (with uncertainties) from name of the folder where the data are found
+fit_data(dataset, data_threshold=3, MC_trials=10000, autoplot=False, fit='all')
+    Perform fitting on the dataset to obtain a compilation of evaluated half-lives of every sub-dataset
 
     Parameters
     ----------
-    path : str (Path)
-        directory name where measurement files are found
-    apt : bool
-        show plots during elaboration (default False)
-    write_csv : bool
-        write csv files at various stages of the elaboration (default False)
+    dataset : pandas.DataFrame
+        dataframe containing data to fit
+    data_threshold : int
+        minimum number of data to perform the fit (default 3)
     MC_trials : int
-        number of montecarlo trials (default 10000)
+        number of MC trials for the MonteCarlo fitting method (default 10000)
+    autoplot : bool
+        whether automatically display a plot (default False)
     fit : str
-        fitting procedure of choice (default 'all')
-    method : str
-        averaging method of choice (default 'all')
-    output_path : str (or Path)
-        destination to save results files, if invalid defaults to {path}/elaboration (default '')
-    iterative : bool
-        whether to perform an iterative elaboration; useful for shorter half-lives to correct for counting decay (default False)
-        In case this argument is True, 'fit' and 'method' arguments need to be selected and cannot be set to all
+        string defining a specific fit to perform (default 'all')
+        accepted input (case insensitive):
+            'weighted linear', 'wl'                     to perform Weighted Linear fit
+            'linear', 'l'                               to perform Linear fit
+            'weighted exponential', 'wexp'              to perform Weighted Exponential fit
+            'exponential', 'exp'                        to perform Exponential fit
+            'montecarlo linear', 'mcl'                  to perform MonteCarlo Linear fit
+            'montecarlo exponential', 'mcexp'           to perform MonteCarlo Exponential fit
+            'montecarlo', 'mcm'                         to perform only MonteCarlo fits
+            'weighted', 'w'                             to perform only weighted fits
+            'nonweighted', 'nw'                         to perform only non-weighted fits
+            'all'                                       to perform all the fits
 
     Return
     ------
-    half_life_results : dict
-        half_life value
+    result : pandas.DataFrame
+        result of the performed fit
     information : dict
-        dictionary with useful information"""
+        dictionary with additional information concerning fitting procedures"""
 ```
 
 ## Contacts
