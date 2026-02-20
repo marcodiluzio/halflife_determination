@@ -40,7 +40,19 @@ tj  ── Sample measurement(tj) ───────────────�
 tk  ── Sample measurement(tk) ────────────────
 ```
 
-All files (measurement for halflife determination and Birks evalaution) have to be of .csv format returned from '[REFERENCE!]' module and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code. Showed below it's an example of a valid way to manage your measurement files:  
+All files (measurement for halflife determination and Birks evalaution) have to be of .csv format returned from '[REFERENCE!]' module and saved into a main folder (which will be recalled by the software).  
+Measurement filenames have to be structured in a precise way reported below  
+
+```
+TDCR_Results_{nuclide}_{lab}_{year}_{month}_{cocktail and sample number}_{ND filter}_{instrument code}_{extended dead time}_{coincidence window}_{progressive integer}.csv
+or
+TDCR_Results_{nuclide}_{lab}_{year}_{cocktail and sample number}_{ND filter}_{instrument code}_{extended dead time}_{coincidence window}_{progressive integer}.csv
+
+filename example: TDCR_Results_Pm-147_LNHB_2025_PS1_0_nanoTDCR_10_100_12.csv
+```
+
+with words in {} are relevant measurement information and should not contain underscores.  
+Files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code. Showed below it's an example of a valid way to manage your measurement files:  
 
 ```
 Pm-147/
