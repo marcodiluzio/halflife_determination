@@ -41,7 +41,7 @@ tk  ── Sample measurement(tk) ───────────────�
 ```
 
 All files (measurement for halflife determination and Birks evalaution) have to be of .csv format returned from '[REFERENCE!]' module and saved into a main folder (which will be recalled by the software).  
-Measurement filenames have to be structured in a precise way reported below  
+Measurement filenames have to be structured in a precise way reported as follows  
 
 ```
 TDCR_Results_{nuclide}_{lab}_{year}_{month}_{cocktail and sample number}_{ND filter}_{instrument code}_{extended dead time}_{coincidence window}_{progressive integer}.csv
