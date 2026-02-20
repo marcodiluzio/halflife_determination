@@ -2,7 +2,7 @@
 
 ## General
 halflife_determination is a package for evaluation of half-life value (and corresponding uncertainty) of radionuclides which activity is monitored by collecting information on beta decay through a series of TDCR (Triple-to-Double Coincidence Ratio) liquid scintillation measurements. It is written in python 3 and relies on scientific modules such as *numpy*, *pandas*, *scipy*, *consensusGen*.  
-At present, the only input file format allowed is the csv resulting from TDCR elaboration performed with package [TDCRPy](https://github.com/RomainCoulon/TDCRPy). All input files to be considered for elaboration need to be inside a main folder; they can, however, be organized into subfolders.  
+At present, the only input file format allowed is the csv resulting from TDCR elaboration performed with package [TDCRPy](https://github.com/RomainCoulon/TDCRPy). All input files to be considered for elaboration need to be inside the same main folder; they can, however, be organized into subfolders.  
 Additional formats and data from other measurement techniques will be investigated in the future.
 
 ## Structure
@@ -14,7 +14,32 @@ The package is composed of the following modules:
 A convenience function (called *elaboration*) grouping the three main functions in a single call is available. It can also be accessed from the terminal command line and manages keyword arguments passed to the intermediate functions via an optional configuration file.  
 
 ## Input data management
-Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required. A so-called Birks evaluation consists in a tight series of measurements acquired for each dataset where the sample is measured with and wihtout various ND filters to artificially variate the TDCR value and record the changes to the evaluated activity. At least one Birks evaluation is required for each dataset, however multiple evaluations held at regular intervals during the measurement campaign are also supported.  
+Liquid scintillation measurements performed with TDCR method need to be taken over time for the investigated radionuclide. A minimum of 4 measurements for dataset are necessary, where a dataset indicates all measurements acquired for a sample in the same experimental conditions (extended dead time, coincidence window, scintillation cocktail). Additional measurements to evaluate Birks constant are also required. A so-called Birks evaluation consists in a tight series of measurements acquired for each dataset where the sample is measured with and wihtout various ND filters to artificially variate the TDCR value and record the changes to the evaluated activity. At least one Birks evaluation is required for each dataset, however multiple evaluations held at regular intervals during the measurement campaign are also supported. Showed below it's an example of an allowed way to structure the measurements  
+
+```
+t0  ── Sample measurement(t0) ────────────────
+|   ── Sample measurement(t0) + ND filter 1 ──────
+|   ── Sample measurement(t0) + ND filter 2 ──────
+|   ── Sample measurement(t0) + ND filter n ──────
+|
+t1  ── Sample measurement(t1) ────────────────
+|
+t2  ── Sample measurement(t2) ────────────────
+|
+...
+|
+tn  ── Sample measurement(tn) ────────────────
+|
+tj  ── Sample measurement(tj) ────────────────
+|   ── Sample measurement(tj) + ND filter 1 ──────
+|   ── Sample measurement(tj) + ND filter 2 ──────
+|   ── Sample measurement(tj) + ND filter n ──────
+|
+...
+|
+tk  ── Sample measurement(tk) ────────────────
+```
+
 All files (measurement for halflife determination and Birks evalaution) have to be of .csv format returned from '[REFERENCE!]' module and saved into a main folder (which will be recalled by the software). No special filename structure is required and files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code. Showed below it's an example of a valid way to manage your measurement files:  
 
 ```
