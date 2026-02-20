@@ -151,6 +151,53 @@ Model Analytic;Combined Rel. Unc. Activity;0.0012135880474480828;;rel;Combined r
   if the 'path_to_configuration_file' points to a file that does not exist, a default configuration file will be created at that destination  
 
 
+## Documentation
+for further documentation refer to the classes' and functions' docstrings  
+```python
+help(hl_elaboration.elaboration)
+Help on function elaboration in module halflife_determination.hl_elaboration:
+
+elaboration(
+    path,
+    apt=False,
+    nuclide=None,
+    write_csv=False,
+    MC_trials=10000,
+    fit='all',
+    method='all',
+    output_path='',
+    iterative=False
+)
+    Comprehensive function returning a dictionary with half-life values (with uncertainties) from name of the folder where the data are found
+
+    Parameters
+    ----------
+    path : str (Path)
+        directory name where measurement files are found
+    apt : bool
+        show plots during elaboration (default False)
+    write_csv : bool
+        write csv files at various stages of the elaboration (default False)
+    MC_trials : int
+        number of montecarlo trials (default 10000)
+    fit : str
+        fitting procedure of choice (default 'all')
+    method : str
+        averaging method of choice (default 'all')
+    output_path : str (or Path)
+        destination to save results files, if invalid defaults to {path}/elaboration (default '')
+    iterative : bool
+        whether to perform an iterative elaboration; useful for shorter half-lives to correct for counting decay (default False)
+        In case this argument is True, 'fit' and 'method' arguments need to be selected and cannot be set to all
+
+    Return
+    ------
+    half_life_results : dict
+        half_life value
+    information : dict
+        dictionary with useful information
+```
+
 ## Contacts
 Marco Di Luzio  
 m.diluzio@inrim.it
