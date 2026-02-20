@@ -18,9 +18,9 @@ Liquid scintillation measurements performed with TDCR method need to be taken ov
 
 ```
 t0  ── Sample measurement(t0) ────────────────
-|   ── Sample measurement(t0) + ND filter 1 ──────
-|   ── Sample measurement(t0) + ND filter 2 ──────
-|   ── Sample measurement(t0) + ND filter n ──────
+|   ── Sample measurement(t0) + ND filter 1 ──
+|   ── Sample measurement(t0) + ND filter 2 ──
+|   ── Sample measurement(t0) + ND filter n ──
 |
 t1  ── Sample measurement(t1) ────────────────
 |
@@ -31,9 +31,9 @@ t2  ── Sample measurement(t2) ───────────────�
 tn  ── Sample measurement(tn) ────────────────
 |
 tj  ── Sample measurement(tj) ────────────────
-|   ── Sample measurement(tj) + ND filter 1 ──────
-|   ── Sample measurement(tj) + ND filter 2 ──────
-|   ── Sample measurement(tj) + ND filter n ──────
+|   ── Sample measurement(tj) + ND filter 1 ──
+|   ── Sample measurement(tj) + ND filter 2 ──
+|   ── Sample measurement(tj) + ND filter n ──
 |
 ...
 |
