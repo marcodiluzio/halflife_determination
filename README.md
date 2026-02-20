@@ -51,7 +51,7 @@ TDCR_Results_{nuclide}_{lab}_{year}_{cocktail and sample number}_{ND filter}_{in
 filename example: TDCR_Results_Pm-147_LNHB_2025_PS1_0_nanoTDCR_10_100_12.csv
 ```
 
-with words in {} are relevant measurement information and should not contain underscores.
+with words in {} identifying relevant measurement information and their corresponding strings should not contain underscores.
 - The {cocktail and sample number} has to be an alphanumeric string as the numeric part suffix identifies the sample code.
 - If {ND filter} is 0 means no ND filter is applied to the sample and the measurement is adopted for half-life determination, it defines a Birks evaluation measurement otherwise.  
 Files can be organized in subfolders (down to 2 levels) within the main folder and still be recognized by the code. Showed below it's an example of a valid way to manage your measurement files:  
