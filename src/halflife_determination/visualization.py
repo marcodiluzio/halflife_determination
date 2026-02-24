@@ -17,12 +17,13 @@ giving access to all its methods and classes
 author:  Marco Di Luzio
 email:   m.diluzio@inrim.it
 date:    2026-01-22
-version: 0.0.1
 """
 
 #imports
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 
