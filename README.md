@@ -40,7 +40,7 @@ tj  ── Sample measurement(tj) ───────────────�
 tk  ── Sample measurement(tk) ────────────────
 ```
 
-All files (measurement for halflife determination and Birks evaluation) have to be of .csv format returned from '[REFERENCE!]' module and saved into a main folder (which will be recalled by the software).  
+All files (measurement for halflife determination and Birks evaluation) have to be of .csv format returned from [TDCR_DATA](https://github.com/RomainCoulon/TDCR_data) module and saved into a main folder (which will be recalled by the software).  
 Measurement filenames have to be structured in a precise way reported as follows  
 
 ```
