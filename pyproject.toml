@@ -12,7 +12,7 @@ description = "Package for half-life evaluation of nuclides from repeated TDCR m
 readme = "README.md"
 requires-python = ">=3.6"
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
