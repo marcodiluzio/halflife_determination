@@ -116,7 +116,7 @@ Model Analytic;Combined Rel. Unc. Activity;0.0012135880474480828;;rel;Combined r
 ### Install
 - install the package from pip
   ```shell
-  pip install halflife_determination
+  pip install halflife-determination
   ``` 
 
 ### Run from script (option 1)
