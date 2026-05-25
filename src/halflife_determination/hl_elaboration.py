@@ -826,7 +826,7 @@ def _linear_fitting_procedure_M(X, Y, UY=None, autoplot=False, title='', k_limit
 
         if np.sum(check) > 0:
             if np.sum(masque) < 4:
-                return np.nan, np.nan, masque
+                return np.nan, np.nan, masque, np.nan
             
             idx_f = _norm_res.argmax()
 
